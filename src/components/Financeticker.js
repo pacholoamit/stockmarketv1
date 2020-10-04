@@ -62,10 +62,10 @@ function Financeticker() {
 			.catch((err) => {
 				console.log(err);
 			});
-	}, []);
+	});
 
 	const cryptoTicker = crypto.map((cryptoData) => (
-		<Grid item xs={12}>
+		<Grid item container xs={2}>
 			<Card className={classes.root}>
 				<CardContent>
 					<Typography
@@ -80,7 +80,15 @@ function Financeticker() {
 		</Grid>
 	));
 
-	return <Ticker>{() => <>{cryptoTicker}</>}</Ticker>;
+	return (
+		<Grid container direction='column'>
+			<Grid item xs={12}>
+				<Ticker speed={2} mode='chain'>
+					{() => <>{cryptoTicker}</>}
+				</Ticker>
+			</Grid>
+		</Grid>
+	);
 }
 
 export default Financeticker;

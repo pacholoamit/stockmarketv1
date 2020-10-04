@@ -6,8 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Cards from './components/Cards';
 import axios from 'axios';
 import Financeticker from './components/Financeticker';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 
 const useStyles = makeStyles({
 	root: {},
@@ -56,9 +54,11 @@ function App() {
 				<Grid item xs={12}>
 					<MainInput />
 				</Grid>
-				<Grid item xs={12}>
-					<Financeticker />
-				</Grid>
+				{/* <Grid container direction='column'>
+					<Grid item xs={12}> */}
+				<Financeticker />
+				{/* </Grid>
+				</Grid> */}
 				<Grid item container xs={12} justify='center' alignItems='center'>
 					<Typography variant='h3' className={classes.headerFont}>
 						Stonks R' Us
