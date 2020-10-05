@@ -54,11 +54,11 @@ function App() {
 				<Grid item xs={12}>
 					<MainInput />
 				</Grid>
-				{/* <Grid container direction='column'>
-					<Grid item xs={12}> */}
-				<Financeticker />
-				{/* </Grid>
-				</Grid> */}
+				<Grid container direction='row'>
+					<Grid item xs={12}>
+						<Financeticker />
+					</Grid>
+				</Grid>
 				<Grid item container xs={12} justify='center' alignItems='center'>
 					<Typography variant='h3' className={classes.headerFont}>
 						Stonks R' Us
