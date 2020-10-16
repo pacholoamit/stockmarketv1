@@ -6,11 +6,13 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
+import ContentLoader from 'react-content-loader';
+import PageVisibility from 'react-page-visibility';
 
 const useStyles = makeStyles({
 	root: {
-		minWidth: 280,
 		backgroundColor: '#1a152a',
+		minWidth: '1920px',
 	},
 	companyName: {
 		fontSize: 14,
@@ -19,158 +21,143 @@ const useStyles = makeStyles({
 	stockSymbol: {
 		color: 'white',
 	},
-	pos: {
-		marginBottom: 12,
-		color: 'white',
-	},
+
 	positive: {
 		color: '#0aa793',
-		marginBottom: 12,
+		fontSize: 14,
 	},
 	negative: {
 		color: '#de4c4c',
-		marginBottom: 12,
+		fontSize: 14,
 	},
 	stockDetails: {
 		color: 'rgba(255, 255, 255, 0.7)',
 	},
-	styledButton: {
-		background: 'linear-gradient(45deg, #0aa793 30%, #0aa793 90%)',
-		border: 0,
-		borderRadius: 3,
-		boxShadow: '0 3px 5px 2px rgb(20, 62, 68)',
-		color: 'white',
-		height: '25px',
-		padding: '20px',
-		justifyItems: 'flex-end',
-	},
 });
-
-const cryptoSource = {
-	source0: 0,
-	source1: 1,
-	source2: 2,
-	source3: 3,
-	source4: 4,
-	source5: 5,
-	source6: 6,
-	source7: 7,
-	source8: 8,
-	source9: 9,
-};
+const baseImageUrl = 'https://www.cryptocompare.com/';
 
 function Financeticker() {
+	const [pageisVisible, setPageisVisibile] = useState(true);
+	const [crypto, setCrypto] = useState([]);
+	const [isLoading, setLoading] = useState(false);
 	const classes = useStyles();
-	const [crypto, setCrypto] = useState();
-	const [crypto1, setCrypto1] = useState();
-	const [crypto2, setCrypto2] = useState();
-	const [crypto3, setCrypto3] = useState();
-	const [crypto4, setCrypto4] = useState();
-	const [crypto5, setCrypto5] = useState();
-	const [crypto6, setCrypto6] = useState();
-	const [crypto7, setCrypto7] = useState();
-	const [crypto8, setCrypto8] = useState();
-	const [crypto9, setCrypto9] = useState();
+
+	const handleVisibilityChange = (isVisible) => {
+		setPageisVisibile(isVisible);
+	};
 
 	useEffect(() => {
 		axios
 			.get(
-				`https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD&api_key=925393dee2466678c0f80b50b2c3b361461af3b85aa446cdd62772d01218ad22`
+				`https://min-api.cryptocompare.com/data/top/totalvolfull?limit=20&tsym=USD&api_key=925393dee2466678c0f80b50b2c3b361461af3b85aa446cdd62772d01218ad22`
 			)
 			.then((resCrypto) => {
-				console.log(resCrypto.data.Data[cryptoSource.source0]);
-				setCrypto(resCrypto.data.Data[cryptoSource.source0]);
+				console.log(resCrypto.data.Data);
+				setCrypto(resCrypto.data.Data.slice(0, 12));
+				setLoading(true);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}, []);
 
-	useEffect(() => {
-		axios
-			.get(
-				`https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD&api_key=925393dee2466678c0f80b50b2c3b361461af3b85aa446cdd62772d01218ad22`
-			)
-			.then((resCrypto) => {
-				console.log(resCrypto.data.Data[cryptoSource.source1]);
-				setCrypto1(resCrypto.data.Data[cryptoSource.source1]);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
-
-	// const cryptoTicker = crypto.map((cryptoData) => (
-	// 	<Grid item container xs={2}>
-	// 		<Card className={classes.root}>
-	// 			<CardContent>
-	// 				<Typography
-	// 					className={classes.companyName}
-	// 					color='textSecondary'
-	// 					gutterBottom
-	// 				>
-	// 					{cryptoData.CoinInfo.FullName}
-	// 				</Typography>
-	// 			</CardContent>
-	// 		</Card>
-	// 	</Grid>
-	// ));
-
-	const cryptoTicker = (
-		<div>
-			<Grid item container xs={2}>
-				<Card className={classes.root}>
-					<CardContent>
-						<Typography
-							className={classes.companyName}
-							color='textSecondary'
-							gutterBottom
-						>
-							{crypto?.CoinInfo?.Name}
-						</Typography>
-					</CardContent>
-				</Card>
-			</Grid>
-			<Grid item container xs={2}>
-				<Card className={classes.root}>
-					<CardContent>
-						<Typography
-							className={classes.companyName}
-							color='textSecondary'
-							gutterBottom
-						>
-							{crypto1?.CoinInfo?.Name}
-						</Typography>
-					</CardContent>
-				</Card>
-			</Grid>
-		</div>
+	const tickerPlaceholderPlaceholder = (
+		<Grid item xs={1}>
+			<ContentLoader
+				speed={2}
+				width={200}
+				height={105}
+				viewBox='0 0 105 200'
+				backgroundColor='#a3a3a3'
+				foregroundColor='#949494'
+			>
+				<rect x='30' y='135' rx='3' ry='3' width='50' height='6' />
+				<rect x='10' y='50' rx='5' ry='5' width='92' height='72' />
+				<rect x='10' y='150' rx='3' ry='3' width='97' height='6' />
+				<rect x='30' y='35' rx='3' ry='3' width='50' height='6' />
+			</ContentLoader>
+		</Grid>
 	);
 
-	// const cryptoTicker = (
-	// 	<Grid item container xs={2}>
-	// 		<Card className={classes.root}>
-	// 			<CardContent>
-	// 				<Typography
-	// 					className={classes.companyName}
-	// 					color='textSecondary'
-	// 					gutterBottom
-	// 				>
-	// 					{crypto1?.CoinInfo?.Name}
-	// 				</Typography>
-	// 			</CardContent>
-	// 		</Card>
-	// 	</Grid>
-	// );
+	const tickerPlaceholder = (
+		<Card className={classes.root}>
+			<CardContent>
+				<Grid container direction='row' justify='flex-start' alignItems='baseline'>
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+					{tickerPlaceholderPlaceholder}
+				</Grid>
+			</CardContent>
+		</Card>
+	);
 
-	return (
-		<Grid container direction='column'>
-			<Grid item xs={12}>
-				<Ticker speed={2} mode='chain'>
-					{() => <>{cryptoTicker}</>}
-				</Ticker>
-			</Grid>
+	const tickerContent = crypto.map((cryptoData) => (
+		<Grid
+			item
+			container
+			direction='column'
+			alignItems='center'
+			justify='flex-start'
+			xs={1}
+		>
+			<Typography className={classes.companyName}>
+				{cryptoData?.CoinInfo.Name}
+			</Typography>
+
+			<img
+				src={baseImageUrl + cryptoData?.CoinInfo?.ImageUrl}
+				alt='cryptoimage'
+				width='40'
+				height='40'
+			/>
+
+			<Typography className={classes.companyName}>
+				$
+				{(cryptoData?.RAW?.USD?.PRICE).toFixed(2)
+					.toString()
+					.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+			</Typography>
+			<Typography
+				className={
+					cryptoData?.DISPLAY?.USD?.CHANGEPCTDAY > 0
+						? classes.positive
+						: classes.negative
+				}
+			>
+				({cryptoData?.DISPLAY?.USD?.CHANGEPCTDAY}%)
+			</Typography>
 		</Grid>
+	));
+
+	const tickerExecution = (
+		<Card className={classes.root}>
+			<CardContent>
+				<Grid container direction='row' justify='flex-start' alignItems='baseline'>
+					{tickerContent}
+				</Grid>
+			</CardContent>
+		</Card>
+	);
+
+	return isLoading ? (
+		<PageVisibility onChange={handleVisibilityChange}>
+			{pageisVisible && (
+				<Ticker speed={2} mode='run-in'>
+					{() => <>{tickerExecution}</>}
+				</Ticker>
+			)}
+		</PageVisibility>
+	) : (
+		tickerPlaceholder
 	);
 }
 

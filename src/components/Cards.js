@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles({
 	root: {
@@ -46,7 +47,8 @@ const useStyles = makeStyles({
 	},
 });
 
-export default function Cards(props) {
+function Cards(props) {
+	const { history } = props;
 	const classes = useStyles();
 	return (
 		<Card className={classes.root}>
@@ -72,7 +74,7 @@ export default function Cards(props) {
 					className={props.company.change > 0 ? classes.positive : classes.negative}
 					color='textSecondary'
 				>
-					{props.company.change}%
+					({props.company.change}%)
 					<Typography className={classes.pos} color='textSecondary'>
 						${props.company.latestPrice}
 					</Typography>
@@ -85,7 +87,11 @@ export default function Cards(props) {
 			</CardContent>
 			<Grid item container direction='row' justify='flex-end'>
 				<CardActions>
-					<Button size='small' className={classes.styledButton}>
+					<Button
+						onClick={() => history.push(`/symbol/${props.company.symbol}`)}
+						size='small'
+						className={classes.styledButton}
+					>
 						View
 					</Button>
 				</CardActions>
@@ -93,3 +99,5 @@ export default function Cards(props) {
 		</Card>
 	);
 }
+
+export default withRouter(Cards);

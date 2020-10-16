@@ -1,48 +1,95 @@
-import React from 'react';
+/* eslint-disable no-useless-concat */
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import SearchIcon from '@material-ui/icons/Search';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import axios from 'axios';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
 		flexWrap: 'wrap',
 		backgroundColor: '#1a152a',
+		color: 'white',
 	},
 	textField: {
-		marginLeft: theme.spacing(1),
-		marginRight: theme.spacing(1),
+		color: 'white',
+	},
+	chipProps: {
+		color: 'orange',
+	},
+	inputRoot: {
+		'& .MuiFilledInput-input': {
+			color: 'white',
+		},
+		'& .MuiFilledInput-root.Mui-focused .MuiFilledInput-input': {
+			color: 'white',
+		},
+		'& .MuiInputLabel-filled': {
+			color: 'rgba(255, 255, 255, 0.7)',
+		},
+
+		'& .MuiInputLabel-filled .Mui-focused': {
+			color: 'rgba(255, 255, 255, 0.7)',
+		},
 	},
 }));
 
-function MainInput() {
+function MainInput(props) {
+	const { history } = props;
 	const classes = useStyles();
+	const [options, setOptions] = useState([]);
+	const handleChange = (event, value, reason) => {
+		if (reason !== 'clear') {
+			history.push(`/symbol/${value.short_name}`);
+		}
+	};
+
+	// useEffect(() => {
+	// 	axios
+	// 		.get(
+	// 			`https://fcsapi.com/api-v2/stock/list?country=United-states&access_key=Kcj8TXJnynnFqzvwPSO7RBHWH74OKF2UF7kW3aIYSgdtM`
+	// 		)
+	// 		.then((res) => {
+	// 			console.log(res?.data?.response);
+	// 			setOptions(res?.data?.response);
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// }, []);
 
 	return (
 		<div className={classes.root}>
-			<TextField
-				className={classes.textField}
-				color='secondary'
-				id='filled-full-width'
-				placeholder='Search Stock Symbol (I.E. "AAPL", "GOOGL")'
+			<Autocomplete
+				noOptionsText='Fetching Data...'
+				classes={classes}
+				// options={options}
+				autoHighlight={true}
+				blurOnSelect={true}
+				clearOnEscape={true}
 				fullWidth
-				margin='normal'
-				InputLabelProps={{
-					shrink: true,
-				}}
-				variant='filled'
-				inputProps={{
-					style: { color: 'white' },
-					startadornment: (
-						<InputAdornment position='end'>
-							<SearchIcon />
-						</InputAdornment>
-					),
-				}}
+				clearOnBlur={true}
+				getOptionLabel={(options) =>
+					options.name + ' ' + '(' + options.short_name + ')'
+				}
+				onChange={handleChange}
+				// onChange={(event, value, reason) => console.log(reason)}
+				renderInput={(params) => (
+					<TextField
+						{...params}
+						id='filled-full-width'
+						label='Search Crypto Symbol (I.E. "BTC", "ETH")'
+						variant='filled'
+						color='secondary'
+						margin='dense'
+						className={classes.inputRoot}
+					/>
+				)}
 			/>
 		</div>
 	);
 }
 
-export default MainInput;
+export default withRouter(MainInput);
