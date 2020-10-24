@@ -46,26 +46,26 @@ function MainInput(props) {
 		}
 	};
 
-	// useEffect(() => {
-	// 	axios
-	// 		.get(
-	// 			`https://fcsapi.com/api-v2/stock/list?country=United-states&access_key=Kcj8TXJnynnFqzvwPSO7RBHWH74OKF2UF7kW3aIYSgdtM`
-	// 		)
-	// 		.then((res) => {
-	// 			console.log(res?.data?.response);
-	// 			setOptions(res?.data?.response);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// }, []);
+	useEffect(() => {
+		axios
+			.get(
+				`https://fcsapi.com/api-v2/stock/list?country=United-states&access_key=Kcj8TXJnynnFqzvwPSO7RBHWH74OKF2UF7kW3aIYSgdtM`
+			)
+			.then((res) => {
+				console.log(res?.data?.response);
+				setOptions(res?.data?.response);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	return (
 		<div className={classes.root}>
 			<Autocomplete
 				noOptionsText='Fetching Data...'
 				classes={classes}
-				// options={options}
+				options={options}
 				autoHighlight={true}
 				blurOnSelect={true}
 				clearOnEscape={true}
@@ -75,12 +75,11 @@ function MainInput(props) {
 					options.name + ' ' + '(' + options.short_name + ')'
 				}
 				onChange={handleChange}
-				// onChange={(event, value, reason) => console.log(reason)}
 				renderInput={(params) => (
 					<TextField
 						{...params}
 						id='filled-full-width'
-						label='Search Crypto Symbol (I.E. "BTC", "ETH")'
+						label='Search Stock Symbol (I.E. "APPL", "GOOGL")'
 						variant='filled'
 						color='secondary'
 						margin='dense'

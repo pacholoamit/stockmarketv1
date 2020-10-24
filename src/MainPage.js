@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import Cards from './components/Cards';
 import axios from 'axios';
 import Finalticker from './components/Financeticker';
+import CardSkeleton from './components/CardsSkeleton';
+import CardsSkeleton from './components/CardsSkeleton';
 
 const useStyles = makeStyles({
 	headerFont: {
@@ -22,24 +24,45 @@ function App() {
 
 	useEffect(() => {
 		axios
-			.get(
-				`https://cloud.iexapis.com/stable/stock/market/collection/list?collectionName=gainers&token=pk_f0bc337d62df49f48d9b3bfaeaa602c5&listLimit=12&cache=true`
-			)
+			.all([
+				axios.get(
+					`https://cloud.iexapis.com/stable/stock/market/collection/list?collectionName=gainers&token=pk_f0bc337d62df49f48d9b3bfaeaa602c5&listLimit=12&cache=true`
+				),
+			])
+
 			.then((res) => {
-				console.log(res.data);
-				setFinance(res.data);
+				setFinance(res[0].data);
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}, []);
 
-	const cardList = finance.map((companyInfo) => (
-		<Grid item xs={10} sm={6} md={4} lg={3} xl={2}>
-			<Cards company={companyInfo} />
+	const cardListSkeleton = (
+		<Grid item xs={10} sm={5} md={4} lg={3}>
+			<CardsSkeleton />
+		</Grid>
+	);
+
+	const cadListSkeletonContainer = [
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+	];
+
+	const cardListSkeletonArray = cadListSkeletonContainer.map(
+		(skeleton) => skeleton
+	);
+
+	const cardList = finance.map((company, index) => (
+		<Grid item xs={10} sm={5} md={4} lg={3} xl={2}>
+			<Cards company={company} index={index} />
 		</Grid>
 	));
-
+	console.log(finance);
 	return (
 		<div className={classes.root}>
 			<Grid
@@ -49,7 +72,7 @@ function App() {
 				justify='center'
 				alignItems='center'
 			>
-				{/* Navigation space here */}
+				{/* Do not touch this div */}
 				<Grid item xs={12}>
 					<div></div>
 				</Grid>
@@ -63,17 +86,20 @@ function App() {
 				</Grid>
 				<Grid item container justify='flex-start'>
 					<Typography variant='h5' className={classes.subHeaderFont}>
-						Top Blue Chip Stocks
+						Top Performers:
 					</Typography>
 				</Grid>
+
 				<Grid
 					container
 					direction='row'
 					justify='center'
 					alignItems='center'
 					spacing={2}
+					md={11}
 				>
-					{cardList}
+					{finance.length && cardList}
+					{finance < 1 && cardListSkeletonArray}
 				</Grid>
 			</Grid>
 		</div>

@@ -269,15 +269,9 @@ function QuoteCard(props) {
 								justify='space-between'
 								alignItems='baseline'
 							>
-								<Typography className={classes.stockDetails}>capital: </Typography>
+								<Typography className={classes.stockDetails}>Exchange: </Typography>
 								<Typography className={classes.stockDetails}>
-									<NumberFormat
-										value={props?.iex?.quote?.marketCap}
-										thousandSeparator={true}
-										prefix={'$'}
-										displayType={'text'}
-										decimalScale={2}
-									/>
+									{props?.iex?.quote?.primaryExchange}
 								</Typography>
 							</Grid>
 							<Divider classes={{ root: classes.divider }} />

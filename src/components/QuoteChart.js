@@ -4,45 +4,30 @@ import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Chart from 'react-apexcharts';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
 	root: {
-		width: '100vw',
-		maxHeight: '50vh',
+		// width: '100vw',
+		// maxHeight: '40vh',
 		backgroundColor: '#1a152a',
 	},
 	companyName: {
 		fontSize: 18,
 		color: 'white',
-	},
-	stockSymbol: {
-		fontSize: 30,
-		color: 'white',
 		fontWeight: 'bold',
 	},
-	stockPrice: {
-		fontSize: 30,
-		color: 'white',
-	},
+
 	divider: {
 		backgroundColor: 'rgba(255, 255, 255, 0.16)',
 	},
-	positive: {
-		color: '#0aa793',
-		fontSize: 20,
-	},
-	negative: {
-		color: '#de4c4c',
-		fontSize: 20,
-	},
+
 	subheader: {
-		fontSize: 18,
-		color: 'white',
-	},
-	stockDetails: {
-		color: 'rgba(255, 255, 255, 0.7)',
 		fontSize: 14,
+		color: 'rgba(255, 255, 255, 0.7)',
+		fontStyle: 'italic',
 	},
+
 	styledButton: {
 		background: 'linear-gradient(45deg, #0aa793 30%, #0aa793 90%)',
 		border: 0,
@@ -65,55 +50,50 @@ const useStyles = makeStyles({
 
 function QuoteChart(props) {
 	const classes = useStyles();
-	const { open, high, low, close, time, chartData } = props;
-	const conglomerate = [open, high, low, close, time];
-	// console.log(conglomerate);
-
-	// conglomerate.map((array) => {
-	// 	return array.map((options) => {
-	// 		return (
-	// 			{
-	// 				x: new Date(options),
-	// 				y: [options[3], options[1], options[2], options[0]],
-	// 			},
-	// 			console.log(options)
-	// 		);
-	// 	});
-	// });
-	// console.log(conglomerate);
+	const { chartData } = props;
 
 	const chartRender = chartData.t.map((timestamp, index) => ({
-		x: new Date(timestamp),
+		x: new Date(timestamp * 1000),
 		y: [
-			chartData.o[index],
-			chartData.h[index],
-			chartData.l[index],
-			chartData.c[index],
+			(Math.round(chartData.o[index] * 100) / 100).toFixed(2),
+			(Math.round(chartData.h[index] * 100) / 100).toFixed(2),
+			(Math.round(chartData.l[index] * 100) / 100).toFixed(2),
+			(Math.round(chartData.c[index] * 100) / 100).toFixed(2),
 		],
 	}));
+
 	console.log(chartRender);
 
 	const config = {
-		series: [
-			{
-				data: [],
-			},
-		],
+		series: [{ name: 'Price', data: chartRender }],
 		options: {
+			stroke: {
+				curve: 'straight',
+				width: 3,
+			},
+			dataLabels: {
+				enabled: false,
+			},
+			plotOptions: {
+				candlestick: {
+					colors: {
+						upward: '#0aa793',
+						downward: '#de4c4c',
+					},
+				},
+			},
+
 			noData: {
 				text: 'Loading',
 			},
 			chart: {
 				type: 'candlestick',
-			},
-			title: {
-				text: props?.iex?.quote?.companyName,
-				align: 'left',
-				style: {
-					color: 'white',
-					fontFamily: 'sans-serif',
+				zoom: {
+					enabled: true,
+					type: 'xy',
 				},
 			},
+
 			xaxis: {
 				type: 'datetime',
 				labels: {
@@ -144,12 +124,31 @@ function QuoteChart(props) {
 		<Card className={classes.root}>
 			<CardContent>
 				<Grid container direction='column' alignItems='stretch' justify='center'>
+					<Grid
+						item
+						container
+						direction='row'
+						spacing={1}
+						justify='flex-start'
+						alignItems='flex-end'
+					>
+						<Grid item>
+							<Typography className={classes.companyName}>
+								{props?.iex?.quote?.companyName}
+							</Typography>
+						</Grid>
+						<Grid item>
+							<Typography className={classes.subheader}>
+								(Jan 1, 2020 ~ Present)
+							</Typography>
+						</Grid>
+					</Grid>
 					<Grid item>
 						<Chart
 							options={config.options}
 							series={config.series}
-							type='candlestick'
-							height='390px'
+							type='area'
+							height='320px'
 						/>
 					</Grid>
 				</Grid>
