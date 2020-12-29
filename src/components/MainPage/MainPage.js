@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Cards from './components/Cards';
+import Cards from './Cards';
 import axios from 'axios';
-import Finalticker from './components/Financeticker';
-import CardSkeleton from './components/CardsSkeleton';
-import CardsSkeleton from './components/CardsSkeleton';
+import Finalticker from './Financeticker';
+import Notification from './Notification'
+import CardsSkeleton from './CardsSkeleton';
 
 const useStyles = makeStyles({
 	headerFont: {
@@ -26,7 +26,7 @@ function App() {
 		axios
 			.all([
 				axios.get(
-					`https://cloud.iexapis.com/stable/stock/market/collection/list?collectionName=gainers&token=pk_f0bc337d62df49f48d9b3bfaeaa602c5&listLimit=12&cache=true`
+					`https://cloud.iexapis.com/stable/stock/market/collection/list?collectionName=mostactive&token=pk_f0bc337d62df49f48d9b3bfaeaa602c5&listLimit=12&cache=true`
 				),
 			])
 
@@ -51,6 +51,12 @@ function App() {
 		cardListSkeleton,
 		cardListSkeleton,
 		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
+		cardListSkeleton,
 	];
 
 	const cardListSkeletonArray = cadListSkeletonContainer.map(
@@ -64,7 +70,7 @@ function App() {
 	));
 	console.log(finance);
 	return (
-		<div className={classes.root}>
+		<div className={classes.root} style={{ marginBottom: '60px' }}>
 			<Grid
 				container
 				direction='row'
@@ -84,12 +90,14 @@ function App() {
 				<Grid item xs={12}>
 					<Finalticker />
 				</Grid>
+				<Grid item xs={12}>
+					<Notification />
+				</Grid>
 				<Grid item container justify='flex-start'>
 					<Typography variant='h5' className={classes.subHeaderFont}>
 						Top Performers:
 					</Typography>
 				</Grid>
-
 				<Grid
 					container
 					direction='row'
@@ -97,10 +105,13 @@ function App() {
 					alignItems='center'
 					spacing={2}
 					md={11}
+					style={{ marginBottom: '22px' }}
 				>
-					{finance.length && cardList}
-					{finance < 1 && cardListSkeletonArray}
-				</Grid>
+
+					{finance.length > 0 && cardList}
+					{finance <= 0 && cardListSkeletonArray}
+				</Grid >
+
 			</Grid>
 		</div>
 	);

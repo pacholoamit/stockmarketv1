@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
-import QuoteCard from './components/QuoteCard';
+import QuoteCard from './QuoteCard';
 import axios from 'axios';
-import QuoteChart from './components/QuoteChart';
+import QuoteChart from './QuoteChart';
 import { makeStyles } from '@material-ui/core/styles';
-import QuoteNews from './components/QuoteNews';
+import QuoteNews from './QuoteNews';
+import ScaleLoader from 'react-spinners/ScaleLoader';
+
 
 const useStyles = makeStyles({
 	whiteSpace: {
-		paddingBottom: '18px',
+		paddingBottom: '10px',
+	},
+	styledButton: {
+		background: 'linear-gradient(45deg, #0aa793 30%, #0aa793 90%)',
+		border: 0,
+		borderRadius: 3,
+		boxShadow: '0 3px 5px 2px rgb(20, 62, 68)',
+		color: 'white',
+		height: '25px',
+		padding: '20px',
+		justifyItems: 'flex-end',
 	},
 });
 
@@ -18,10 +30,12 @@ function InformationPage({
 	},
 }) {
 	const classes = useStyles();
-	const [iex, setIex] = useState(null);
+	const [iex, setIex] = useState();
 	const [finnhub, setFinnhub] = useState('');
 	const [chartData, setChartData] = useState(null);
 	const [trends, setTrends] = useState('');
+	let currentDate = Math.floor(Date.now() / 1000);
+	const dateFrom6m = currentDate - 15780000;
 
 	useEffect(() => {
 		axios
@@ -36,7 +50,7 @@ function InformationPage({
 					`https://finnhub.io/api/v1/stock/recommendation?symbol=${symbol}&token=bts889748v6tbbfio5p0`
 				),
 				axios.get(
-					`https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=1577836800&to=1603219192&token=bts889748v6tbbfio5p0`
+					`https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${dateFrom6m}&to=${currentDate}&token=bts889748v6tbbfio5p0`
 				),
 			])
 
@@ -49,45 +63,50 @@ function InformationPage({
 			.catch((err) => {
 				console.log(err);
 			});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [symbol]);
-	console.log(iex);
 
-	// useEffect(() => {
-	// 	axios
-	// 		.get(
-	// 			`https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=1577836800&to=1602623478&token=bts889748v6tbbfio5p0`
-	// 		)
-	// 		.then((res) => {
-	// 			setChartData(res.data);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log(err);
-	// 		});
-	// }, [symbol]);
 
-	return (
+	return iex || chartData ? (
 		<Grid container direction='row' spacing={3} alignItems='center'>
 			<Grid item xs={12}>
 				<div></div>
 			</Grid>
 			<Grid item xs={12} sm={12} md={6} lg={4}>
-				<QuoteCard iex={iex} finnhub={finnhub} trends={trends} />
+				{iex && <QuoteCard iex={iex} finnhub={finnhub} trends={trends} />}
 			</Grid>
-			<Grid container direction='column' xs={12} sm={12} md={6} lg={8} spacing={1}>
-				<Grid item xs={12}>
+			<Grid container direction='column' xs={12} sm={12} md={6} lg={8}>
+				<Grid item xs={12} style={{ paddingBottom: '8px' }}>
 					{chartData && (
-						<QuoteChart
-							chartData={chartData}
-							iex={iex}
-							className={classes.whiteSpace}
-						/>
+						<>
+							<QuoteChart
+								chartData={chartData}
+								iex={iex}
+								className={classes.whiteSpace}
+								symbol={symbol}
+								setChartData={setChartData}
+							/>
+							
+						</>
 					)}
 				</Grid>
 				<Grid item xs={12}>
 					{iex && <QuoteNews iex={iex} />}
 				</Grid>
 			</Grid>
-			{/* <div className={classes.whiteSpace}></div> */}
+		</Grid>
+	) : (
+		<Grid
+			container
+			direction='row'
+			justify='center'
+			alignItems='center'
+			style={{ height: '90vh' }}
+		>
+			<Grid item>
+				<ScaleLoader color='#24F0F0' height={50} with={8} margin={3} />
+			</Grid>
 		</Grid>
 	);
 }

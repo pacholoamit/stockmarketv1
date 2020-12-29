@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -61,11 +60,15 @@ function Cards(props) {
 		return str.slice(0, num) + '...';
 	}
 
+	function toDecimal(num) {
+		return Math.round((num + Number.EPSILON) * 100) / 100;
+	}
+
 	useEffect(() => {
 		axios
 			.all([
 				axios.get(
-					`https://cloud.iexapis.com/stable/stock/${company.symbol}/chart/1m?token=pk_6e59e7f718154f03a24aea69529c802a&cache=true&chartCloseOnly=true&chartSimplify=true` //2nd API key from IEX
+					`https://cloud.iexapis.com/stable/stock/${company.symbol}/chart/1m?token=pk_f1b6823234b4425483507c3fe05ee09c&cache=true&chartCloseOnly=true&chartSimplify=true` //2nd API key from IEX peter.usacon@gmail.com
 				),
 			])
 			.then((res) => {
@@ -100,27 +103,26 @@ function Cards(props) {
 					className={company.change > 0 ? classes.positive : classes.negative}
 					color='textSecondary'
 				>
-					({company.change}%)
+					({toDecimal(company.change)}%)
 					<Typography className={classes.pos} color='textSecondary'>
-						${company.latestPrice}
+						${toDecimal(company.latestPrice)}
 					</Typography>
 				</Typography>
 				<Typography variant='body2' component='p' className={classes.stockDetails}>
-					High: {company.high} , Low: {company.low}
+					High: {toDecimal(company.high)} , Low: {toDecimal(company.low)}
 					<br />
-					Open: {company.open} , Close: {company.close}
+					Open: {toDecimal(company.open)} , Close: {toDecimal(company.close)}
 				</Typography>
 			</CardContent>
 			<Grid item container direction='row' justify='flex-end'>
-				<CardActions>
-					<Button
-						onClick={() => history.push(`/symbol/${company.symbol}`)}
-						size='small'
-						className={classes.styledButton}
-					>
-						View
-					</Button>
-				</CardActions>
+				<Button
+					onClick={() => history.push(`/symbol/${company.symbol}`)}
+					size='small'
+					className={classes.styledButton}
+					style={{ marginBottom: '8px', marginRight: '8px' }}
+				>
+					View
+				</Button>
 			</Grid>
 		</Card>
 	);

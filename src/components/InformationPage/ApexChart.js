@@ -2,54 +2,62 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 
 function ApexChart(props) {
+	const { trends} = props
 	const config = {
 		series: [
 			{
 				name: 'Strong Buy',
 				data: [
-					props?.trends[0]?.strongBuy,
-					props?.trends[1]?.strongBuy,
-					props?.trends[2]?.strongBuy,
-					props?.trends[3]?.strongBuy,
-					props?.trends[4]?.strongBuy,
+					trends[0]?.strongBuy,
+					trends[1]?.strongBuy,
+					trends[2]?.strongBuy,
+					trends[3]?.strongBuy,
+					trends[4]?.strongBuy,
 				],
 			},
 			{
 				name: 'Buy',
 				data: [
-					props?.trends[0]?.buy,
-					props?.trends[1]?.buy,
-					props?.trends[2]?.buy,
-					props?.trends[3]?.buy,
-					props?.trends[4]?.buy,
+					trends[0]?.buy,
+					trends[1]?.buy,
+					trends[2]?.buy,
+					trends[3]?.buy,
+					trends[4]?.buy,
 				],
 			},
 			{
 				name: 'Sell',
 				data: [
-					props?.trends[0]?.sell,
-					props?.trends[1]?.sell,
-					props?.trends[2]?.sell,
-					props?.trends[3]?.sell,
-					props?.trends[4]?.sell,
+					trends[0]?.sell,
+					trends[1]?.sell,
+					trends[2]?.sell,
+					trends[3]?.sell,
+					trends[4]?.sell,
 				],
 			},
 			{
 				name: 'Strong Sell',
 				data: [
-					props?.trends[0]?.strongSell,
-					props?.trends[1]?.strongSell,
-					props?.trends[2]?.strongSell,
-					props?.trends[3]?.strongSell,
-					props?.trends[4]?.strongSell,
+					trends[0]?.strongSell,
+					trends[1]?.strongSell,
+					trends[2]?.strongSell,
+					trends[3]?.strongSell,
+					trends[4]?.strongSell,
 				],
 			},
 		],
 
 		options: {
+			noData: {
+				text: 'Recommendation trends unavailable',
+				align: 'center',
+				verticalAlign: 'middle',
+				offsetX: 0,
+				offsetY: 0,
+			},
 			chart: {
 				type: 'bar',
-				height: 350,
+				height: 360,
 				stacked: true,
 				toolbar: {
 					show: false,
@@ -118,7 +126,7 @@ function ApexChart(props) {
 				options={config.options}
 				series={config.series}
 				type='bar'
-				height={350}
+				height={370}
 			/>
 		</div>
 	);

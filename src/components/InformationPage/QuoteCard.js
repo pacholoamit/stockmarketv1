@@ -10,6 +10,7 @@ import Chip from '@material-ui/core/Chip';
 import NumberFormat from 'react-number-format';
 import ApexChart from './ApexChart';
 import { withRouter } from 'react-router-dom';
+import AddToPortfolio from './AddToPortfolio';
 
 const useStyles = makeStyles({
 	root: {
@@ -41,12 +42,19 @@ const useStyles = makeStyles({
 		fontSize: 20,
 	},
 	subheader: {
-		fontSize: 18,
+		fontSize: 23,
 		color: 'white',
 	},
 	stockDetails: {
 		color: 'rgba(255, 255, 255, 0.7)',
 		fontSize: 14,
+	},
+	stockDetailsEllipsis: {
+		color: 'rgba(255, 255, 255, 0.7)',
+		fontSize: 14,
+		whiteSpace: 'nowrap',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
 	},
 	styledButton: {
 		background: 'linear-gradient(45deg, #0aa793 30%, #0aa793 90%)',
@@ -71,7 +79,7 @@ const useStyles = makeStyles({
 
 function QuoteCard(props) {
 	const classes = useStyles();
-	const { history } = props;
+	const { history, iex, finnhub, trends } = props;
 
 	return (
 		<Card className={classes.root}>
@@ -86,23 +94,15 @@ function QuoteCard(props) {
 					>
 						<Grid item>
 							<Typography className={classes.companyName}>
-								{props?.iex?.quote?.companyName}
+								{iex?.quote?.companyName}
 							</Typography>
 						</Grid>
 						<Grid item container spacing={1}>
 							<Grid item>
-								<Chip
-									size='medium'
-									color='secondary'
-									label={props?.iex?.company?.industry}
-								/>
+								<Chip size='medium' color='secondary' label={iex?.company?.industry} />
 							</Grid>
 							<Grid item>
-								<Chip
-									size='medium'
-									color='secondary'
-									label={props?.iex?.company?.sector}
-								/>
+								<Chip size='medium' color='secondary' label={iex?.company?.sector} />
 							</Grid>
 						</Grid>
 					</Grid>
@@ -116,7 +116,7 @@ function QuoteCard(props) {
 					>
 						<Grid item xs={3}>
 							<Typography className={classes.stockSymbol}>
-								{props?.iex?.quote?.symbol}
+								{iex?.quote?.symbol}
 							</Typography>
 						</Grid>
 						<Grid
@@ -130,7 +130,7 @@ function QuoteCard(props) {
 							<Grid item>
 								<Typography className={classes.stockPrice}>
 									<NumberFormat
-										value={props?.iex?.quote?.latestPrice}
+										value={iex?.quote?.latestPrice}
 										thousandSeparator={true}
 										prefix={'$'}
 										decimalScale={2}
@@ -147,7 +147,7 @@ function QuoteCard(props) {
 									}
 								>
 									<NumberFormat
-										value={props?.iex?.quote?.changePercent * 100}
+										value={iex?.quote?.changePercent * 100}
 										thousandSeparator={true}
 										suffix={'%)'}
 										prefix={'('}
@@ -175,7 +175,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>open: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.finnhub?.o}
+										value={finnhub?.o}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -194,7 +194,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>close: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.finnhub?.c}
+										value={finnhub?.c}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -213,7 +213,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>high: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.finnhub?.h}
+										value={finnhub?.h}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -232,7 +232,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>low: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.finnhub?.l}
+										value={finnhub?.l}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -251,7 +251,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>prev. close: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.finnhub?.pc}
+										value={finnhub?.pc}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -269,9 +269,8 @@ function QuoteCard(props) {
 								justify='space-between'
 								alignItems='baseline'
 							>
-								<Typography className={classes.stockDetails}>Exchange: </Typography>
-								<Typography className={classes.stockDetails}>
-									{props?.iex?.quote?.primaryExchange}
+								<Typography className={classes.stockDetailsEllipsis}>
+									{iex?.quote?.primaryExchange}
 								</Typography>
 							</Grid>
 							<Divider classes={{ root: classes.divider }} />
@@ -285,7 +284,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>P/E ratio: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.iex?.quote?.peRatio}
+										value={iex?.quote?.peRatio}
 										thousandSeparator={true}
 										displayType={'text'}
 										decimalScale={2}
@@ -303,7 +302,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>52week high: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.iex?.quote?.week52High}
+										value={iex?.quote?.week52High}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -322,7 +321,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>52week low: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.iex?.quote?.week52Low}
+										value={iex?.quote?.week52Low}
 										thousandSeparator={true}
 										prefix={'$'}
 										displayType={'text'}
@@ -341,7 +340,7 @@ function QuoteCard(props) {
 								<Typography className={classes.stockDetails}>(YTD) change: </Typography>
 								<Typography className={classes.stockDetails}>
 									<NumberFormat
-										value={props?.iex?.quote?.ytdChange * 100}
+										value={iex?.quote?.ytdChange * 100}
 										thousandSeparator={true}
 										suffix={'%'}
 										displayType={'text'}
@@ -353,31 +352,35 @@ function QuoteCard(props) {
 						</Grid>
 					</Grid>
 					<Grid item container direction='column'>
-						<Grid item>
+						<Grid item style={{ marginTop: '10px' }}>
 							<Typography className={classes.subheader}>
 								Recommendation Trends:
 							</Typography>
 						</Grid>
 					</Grid>
-					<Grid item>{props.trends && <ApexChart {...props} />}</Grid>
+					<Grid item style={{ marginBottom: '13px' }}>
+						{trends && <ApexChart {...props} />}
+					</Grid>
 					<Grid
 						item
 						container
 						direction='row'
 						justify='flex-end'
 						alignItems='flex-end'
+						spacing={1}
 					>
-						<Button
-							size='small'
-							className={classes.homeButton}
-							onClick={() => history.push(`/`)}
-						>
-							Back to Home
-						</Button>
-
-						<Button size='small' className={classes.styledButton}>
-							More Info
-						</Button>
+						<Grid item>
+							<Button
+								size='small'
+								className={classes.homeButton}
+								onClick={() => history.push(`/`)}
+							>
+								Home
+							</Button>
+						</Grid>
+						<Grid item>
+							<AddToPortfolio {...props} />
+						</Grid>
 					</Grid>
 				</Grid>
 			</CardContent>
